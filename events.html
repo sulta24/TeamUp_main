@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>События</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #0f0f0f;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin: 50px auto;
+            width: 80%;
+            max-width: 800px;
+        }
+        .event-card {
+            background: #1e1e21;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 2px solid #A78BFA;
+            box-shadow: 0 0 10px rgba(167, 139, 250, 0.2);
+            text-align: left;
+        }
+        .event-card img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .event-card h2 {
+            margin: 10px 0;
+            font-size: 1.5em;
+            color: #A78BFA;
+        }
+        .event-card p {
+            margin: 5px 0;
+            color: #bbb;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            background-color: #A78BFA;
+            color: white;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #7c3aed;
+        }
+        button:disabled {
+            background-color: #444;
+            cursor: not-allowed;
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #27272a;
+            padding: 15px 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        События
+    </div>
+
+    <div class="container">
+        <h1>Ближайшие события</h1>
+        <div id="event-container">
+            <p>Загрузка...</p>
+        </div>
+        <div class="buttons">
+            <button id="prevBtn" onclick="prevPage()" disabled>Назад</button>
+            <button id="nextBtn" onclick="nextPage()">Вперёд</button>
+        </div>
+    </div>
+
+    <script>
+        let page = 0;  // Текущая страница (начинаем с первой)
+        const limit = 3; // Количество событий на одной странице
+
+        async function fetchEvents(pageNum) {
+            try {
+                let response = await fetch(`http://127.0.0.1:5000/events?limit=${limit}&offset=${pageNum * limit}`);
+                let events = await response.json();
+
+                if (events.error || events.length === 0) {
+                    if (pageNum > 0) { // Если данных нет, вернемся на предыдущую страницу
+                        page--;
+                    }
+                    updateButtons();
+                    return;
+                }
+
+                document.getElementById("event-container").innerHTML = events.map(event => `
+                    <div class="event-card">
+                        ${event.image_path ? `<img src="${event.image_path}" alt="${event.name}">` : ""}
+                        <h2>${event.name}</h2>
+                        <p><strong>Тип:</strong> ${event.type}</p>
+                        <p><strong>Дата:</strong> ${event.start_date} - ${event.end_date}</p>
+                    </div>
+                `).join('');
+
+                updateButtons();
+            } catch (error) {
+                console.error("Ошибка загрузки событий:", error);
+                document.getElementById("event-container").innerHTML = "<p>Ошибка загрузки данных.</p>";
+            }
+        }
+
+        function nextPage() {
+            page++;
+            fetchEvents(page);
+        }
+
+        function prevPage() {
+            if (page > 0) {
+                page--;
+                fetchEvents(page);
+            }
+        }
+
+        function updateButtons() {
+            document.getElementById("prevBtn").disabled = page === 0;
+        }
+
+        fetchEvents(page);
+    </script>
+
+</body>
+</html>

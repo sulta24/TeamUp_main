@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat</title>
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #0f0f0f;
+        color: white;
+        }
+        .container {
+            background-color: black;
+            padding: 20px;
+            border-radius: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        .chat-box {
+            height: 600px;
+            overflow-y: auto;
+            border: none;
+            padding: 15px;
+            background: rgb(80,46,91);
+            background: linear-gradient(0deg, rgba(80,46,91,1) 0%, rgba(158,86,170,1) 100%);
+            border-radius: 5px;
+            text-align: left;
+        }
+        .message {
+            display: inline-block;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 5px;
+            font-size: 16px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background: #c05fa2;
+            text-align: right;
+            border-radius: 40px;
+            margin-left: auto;
+        }
+        .ai-message {
+            background: #444;
+            border-radius: 10px;
+            text-align: left;
+        }
+        .event-container {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            background: #292929;
+            border: none;
+        }
+        .event-message {
+            background: #333;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: left;
+            border: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        .event-message img {
+            width: 60px;
+            height: 60px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .event-info {
+            flex: 1;
+        }
+        .input-container {
+            display: flex;
+            margin-top: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background: #333;
+            color: white;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px;
+            margin-left: 10px;
+            border: none;
+            background-color: #A78BFA;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #7c3aed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>AI Чат</h2>
+        <div class="chat-box" id="chat-box"></div>
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="Введите сообщение...">
+                <button onclick="sendMessage()">Отправить</button>
+            </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const chatBox = document.getElementById('chat-box');
+            const message = inputField.value;
+            if (!message) return;
+
+            // Выводим сообщение пользователя
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user-message';
+            userMessage.textContent = message;
+            chatBox.appendChild(userMessage);
+            inputField.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const response = await fetch('http://localhost:5000/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: 3, message })
+            });
+
+            const data = await response.json();
+
+            // Создаём контейнер для AI-ответа и ивентов
+            const aiContainer = document.createElement('div');
+            aiContainer.className = 'event-container';
+
+            // Форматируем текст AI-ответа
+            if (data.text) {
+                const aiTextMessage = document.createElement('div');
+                aiTextMessage.className = 'message ai-message';
+
+                // Разбиваем текст AI на абзацы
+                const paragraphs = data.text.split(/\n+/).map(p => `<p>${p}</p>`).join('');
+                aiTextMessage.innerHTML = paragraphs;
+
+                aiContainer.appendChild(aiTextMessage);
+            }
+
+            // Проверяем, есть ли события
+            if (data.events && data.events.length > 0) {
+                const eventList = document.createElement('div');
+                eventList.innerHTML = '<h4>Предложенные мероприятия:</h4>';
+
+                data.events.forEach(event => {
+                    const eventMessage = document.createElement('div');
+                    eventMessage.className = 'event-message';
+                    eventMessage.innerHTML = `
+                        <img src="${event.image_path}" alt="Событие">
+                        <div class="event-info">
+                            <strong>${event.name}</strong><br>
+                            <em>${event.type}</em><br>
+                            📅 ${event.start_date} - ${event.end_date}
+                        </div>
+                    `;
+                    eventList.appendChild(eventMessage);
+                });
+
+                aiContainer.appendChild(eventList);
+            }
+
+            // Добавляем контейнер в чат
+            chatBox.appendChild(aiContainer);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+        }
+    </script>
+</body>
+</html>

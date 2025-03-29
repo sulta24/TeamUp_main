@@ -4,36 +4,252 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TeamUp! - Community Feed</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #18181b;
+            color: white;
+        }
+        html, body {
+            height: 100%;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1f1f23;
+            padding: 15px 30px;
+            .chat{
+                font-size: medium;
+                border: none;
+                border-radius: 20px;
+                color: white;
+                background-color: #7c3aed;
+                width: 250px;
+                height: 40px;
+
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-bar {
+            background-color: #27272a;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            color: white;
+            width: 200px;
+        }
+
+        #dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 200px;
+            background-color: #1f1f23;
+            border: 1px solid #27272a;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .menu-item{
+            display: flex;
+            img{
+                margin-top: 5px;
+                height: 25px;
+            }
+
+        }
+        .menu-item p{
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background-color: #7c3aed;
+        }
+
+        .profile-link {
+            color: white;
+            text-decoration: none;
+            background-color: #7c3aed;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .main-container {
+            display: flex;
+            margin: 20px;
+        }
+
+        .sidebar {
+            width: 20%;
+            padding: 10px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+        .sidebar ul li{
+            display: flex;
+        }
+
+        .sidebar ul li button {
+            background-color: #18181b;
+            display: block;
+            padding: 10px;
+            color: rgb(255, 255, 255);
+            margin: 10px 0;
+            border: #000000;
+            border-radius: 6px;
+            text-align: left;
+            padding-left: 15px;
+            font-size: large;
+        }
+
+        .sidebar ul li img {
+            height: 25px;
+            margin-top: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #1f1f23;
+        }
+
+        .footer p {
+            color: #a3a3a3;
+        }
+        .content{
+            width: 80%;
+            height: 800px;
+        }
+        #iframe{
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
 <body>
     <nav class="navbar">
         <h1 class="logo">TeamUp!</h1>
-        <input type="text" class="search-bar" placeholder="Поиск">
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Поиск" id="search-input">
+            <div id="dropdown-menu">
+                <div class="menu-item">
+                    <img src="data/site_images/startups.png">
+                    <p>Startups</p>
+                </div>
+                <div class="menu-item">
+                    <img src="data/site_images/comps.png">
+                    <p>Competitions</p>
+                </div>
+                <div class="menu-item">
+                    <img src="data/site_images/resources.png">
+                    <p>Resources</p>
+                </div>
+                <div class="menu-item">
+                    <img src="data/site_images/advices.png">
+                    <p>Advices & Tips</p>
+                </div>
+                <div class="menu-item">
+                    <img src="data/site_images/news.png">
+                    <p>News</p>
+                </div>
+                <div class="menu-item">
+                    <img src="data/site_images/workshops.png">
+                    <p>Workshops</p>
+                </div>
+                <div class="menu-item">
+                    <img src="data/site_images/internships.png">
+                    <p>internships</p>
+                </div>
+            </div>
+        </div>
+        <button class="chat" onclick="loadPage('AI_chat.html')">Обратиться к нейросети</button>
         <a href="#" class="profile-link">Профиль</a>
     </nav>
 
     <div class="main-container">
         <aside class="sidebar">
             <ul>
-                <li><button onclick="loadPage('events.html')">Главная</button></li>
-                <li><button onclick="loadPage('site2.html')">Календарь</button></li>
-                <li><button onclick="loadPage('site2.html')">Курсы</button></li>
-                <li><button onclick="loadPage('site3.html')">Сообщество</button></li>
+                <li>
+                    <img src="data/site_images/home.png">
+                    <button onclick="loadPage('events.html')">Главная</button>
+                </li>
+                <li>
+                    <img src="data/site_images/calendar.png">
+                    <button onclick="loadPage('calendar.html')">Календарь</button>
+                </li>
+                <li>
+                    <img src="data/site_images/cources.png">
+                    <button onclick="loadPage('courses.html')">Курсы</button>
+                </li>
+                <li>
+                     <img src="data/site_images/society.png">
+                    <button onclick="loadPage('users.html')">Сообщество</button>
+                </li>
+                <li>
+                    <img src="data/site_images/people.png">
+                   <button onclick="loadPage('site2.html')">Люди</button>
+               </li>
             </ul>
         </aside>
 
         <section class="content">
-            <iframe id = "iframe" src="events.html"></iframe>
+            <iframe id="iframe" src="site1.html"></iframe>
         </section>
     </div>
 
     <footer class="footer">
         <p>Privacy Policy | Contact Us | Social Media</p>
     </footer>
+
     <script>
         function loadPage(page) {
-          document.getElementById('iframe').src = page; // Меняет содержимое iframe
+            document.getElementById('iframe').src = page; // Меняет содержимое iframe
         }
+
+        const searchInput = document.getElementById('search-input');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+
+        searchInput.addEventListener('focus', () => {
+            dropdownMenu.style.display = 'block';
+        });
+
+        searchInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                dropdownMenu.style.display = 'none';
+            }, 200);
+        });
+
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                searchInput.value = item.textContent;
+                dropdownMenu.style.display = 'none';
+            });
+        });
     </script>
 </body>
 </html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Люди</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .card {
+            background-color: #222;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .avatar {
+            display: flex;
+            align-items: center;
+        }
+
+        .avatar-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .green { background-color: green; }
+        .pink { background-color: purple; }
+        .yellow { background-color: yellow; color: black; }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Люди</h2>
+        <div id="people-list" class="grid-container"></div>
+        <div class="pagination">
+            <button id="prev-btn" disabled>◀</button>
+            <span id="page-number">1</span>
+            <button id="next-btn">▶</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const itemsPerPage = 6;
+        const peopleList = document.getElementById("people-list");
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const pageNumber = document.getElementById("page-number");
+
+        async function fetchPeople(page) {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/users_pages?page=${page}`);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error("Ошибка загрузки данных", error);
+                return [];
+            }
+        }
+
+        async function renderPeople() {
+            peopleList.innerHTML = "";
+            const people = await fetchPeople(currentPage);
+            if (people.length === 0 && currentPage > 1) {
+                currentPage--;
+                return renderPeople();
+            }
+
+            people.forEach(person => {
+                const card = document.createElement("div");
+                card.classList.add("card");
+                const colorClass = person.color || "green";
+
+                card.innerHTML = `
+                    <div class="avatar">
+                        <div class="avatar-circle ${colorClass}">${person.name ? person.name[0] : "?"}</div>
+                        <div>
+                            <strong>${person.name || "Неизвестный"}</strong><br>
+                            <small>${person.skills || "Навыки не указаны"}</small>
+                        </div>
+                    </div>
+                `;
+                peopleList.appendChild(card);
+            });
+
+            pageNumber.textContent = currentPage;
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = people.length < itemsPerPage;
+        }
+
+        prevBtn.addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPeople();
+            }
+        });
+
+        nextBtn.addEventListener("click", () => {
+            currentPage++;
+            renderPeople();
+        });
+
+        renderPeople();
+    </script>
+</body>
+</html>

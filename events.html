@@ -97,7 +97,7 @@
 
         async function fetchEvents(pageNum) {
             try {
-                let response = await fetch(`http://127.0.0.1:5000/events?limit=${limit}&offset=${pageNum * limit}`);
+                let response = await fetch(`https://75d5-2a0d-b201-1015-cfb4-57cd-d9af-48ed-3822.ngrok-free.app/events?limit=${limit}&offset=${pageNum * limit}`);
                 let events = await response.json();
 
                 if (events.error || events.length === 0) {

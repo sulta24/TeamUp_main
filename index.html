@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TeamUp! - Community Feed</title>
     <style>
+        :root {
+            --primary-color: #7c3aed;
+            --primary-light: #9d6dff;
+            --primary-dark: #6025c5;
+            --dark-bg: #141418;
+            --navbar-bg: #1a1a20;
+            --sidebar-bg: rgba(26, 26, 32, 0.8);
+            --input-bg: #27272a;
+            --card-bg: #1f1f27;
+            --text-light: #ffffff;
+            --text-muted: #a3a3a3;
+            --gradient-primary: linear-gradient(135deg, #7c3aed, #6025c5);
+            --gradient-accent: linear-gradient(135deg, #4f46e5, #9333ea);
+            --gradient-dark: linear-gradient(180deg, #1a1a20, #141418);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+            --border-radius: 8px;
+            --border-radius-lg: 12px;
+            --border-radius-xl: 16px;
+            --transition-speed: 0.3s;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,224 +36,532 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #18181b;
-            color: white;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
-        html, body {
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
+            background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.15), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(79, 70, 229, 0.1), transparent 40%);
+            z-index: -1;
         }
+
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #1f1f23;
-            padding: 15px 30px;
-            .chat{
-                font-size: medium;
-                border: none;
-                border-radius: 20px;
-                color: white;
-                background-color: #7c3aed;
-                width: 250px;
-                height: 40px;
+            background: var(--navbar-bg);
+            padding: 15px 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            z-index: 100;
+        }
 
-            }
+        .navbar::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gradient-accent);
         }
 
         .logo {
             display: flex;
             align-items: center;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
+            background: linear-gradient(90deg, var(--text-light), var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
         }
 
         .search-container {
             position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+            margin: 0 10px;
         }
 
         .search-bar {
-            background-color: #27272a;
+            background-color: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            color: var(--text-light);
+            width: 100%;
+            transition: all 0.2s;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+        }
+
+        .chat-button {
+            font-size: medium;
             border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            color: white;
-            width: 200px;
+            border-radius: 20px;
+            color: var(--text-light);
+            background: var(--gradient-primary);
+            padding: 10px 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all var(--transition-speed);
+            font-weight: bold;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chat-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background: linear-gradient(135deg, #8347f5, #6a2bd7);
         }
 
         #dropdown-menu {
             display: none;
             position: absolute;
-            top: 40px;
+            top: 100%;
             left: 0;
-            width: 200px;
-            background-color: #1f1f23;
-            border: 1px solid #27272a;
-            border-radius: 6px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
             z-index: 1000;
+            margin-top: 5px;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
         }
-        .menu-item{
-            display: flex;
-            img{
-                margin-top: 5px;
-                height: 25px;
-            }
 
-        }
-        .menu-item p{
-            padding: 10px;
-            color: white;
-            cursor: pointer;
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            transition: background-color 0.2s;
+            border-left: 3px solid transparent;
         }
 
         .menu-item:hover {
-            background-color: #7c3aed;
+            background-color: rgba(124, 58, 237, 0.15);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .menu-item img {
+            height: 22px;
+            width: 22px;
+            margin-right: 12px;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+        }
+
+        .menu-item p {
+            color: var(--text-light);
+            cursor: pointer;
+            font-weight: 500;
         }
 
         .profile-link {
-            color: white;
+            color: var(--text-light);
             text-decoration: none;
-            background-color: #7c3aed;
-            padding: 8px 15px;
-            border-radius: 6px;
+            background: var(--gradient-accent);
+            padding: 10px 18px;
+            border-radius: 20px;
             font-weight: bold;
+            transition: all var(--transition-speed);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .profile-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background: linear-gradient(135deg, #5a51f9, #a144f7);
         }
 
         .main-container {
             display: flex;
-            margin: 20px;
+            flex: 1;
+            margin: 0;
+            position: relative;
         }
 
         .sidebar {
-            width: 20%;
-            padding: 10px;
+            width: 250px;
+            padding: 20px 15px;
+            background: var(--sidebar-bg);
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 99;
         }
 
         .sidebar ul {
             list-style: none;
         }
-        .sidebar ul li{
+
+        .sidebar ul li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-item {
             display: flex;
-        }
-
-        .sidebar ul li button {
-            background-color: #18181b;
-            display: block;
-            padding: 10px;
-            color: rgb(255, 255, 255);
-            margin: 10px 0;
-            border: #000000;
-            border-radius: 6px;
+            align-items: center;
+            background-color: transparent;
+            padding: 12px 15px;
+            color: var(--text-light);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            width: 100%;
             text-align: left;
-            padding-left: 15px;
-            font-size: large;
+            font-size: 16px;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+            font-weight: 500;
         }
 
-        .sidebar ul li img {
-            height: 25px;
-            margin-top: 15px;
+        .sidebar-item:hover {
+            background-color: rgba(124, 58, 237, 0.15);
+            border-left: 3px solid var(--primary-color);
+            padding-left: 18px;
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(90deg, rgba(124, 58, 237, 0.2), transparent);
+            border-left: 3px solid var(--primary-color);
+            padding-left: 18px;
+        }
+
+        .sidebar-item img {
+            height: 20px;
+            width: 20px;
+            margin-right: 12px;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+        }
+
+        .content {
+            flex: 1;
+            height: calc(100vh - 130px);
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), transparent);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: var(--dark-bg);
         }
 
         .footer {
             text-align: center;
             padding: 15px;
-            background-color: #1f1f23;
+            background: var(--navbar-bg);
+            margin-top: auto;
+            position: relative;
+        }
+
+        .footer::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gradient-accent);
         }
 
         .footer p {
-            color: #a3a3a3;
+            color: var(--text-muted);
+            font-size: 14px;
         }
-        .content{
-            width: 80%;
-            height: 800px;
+
+        .footer a {
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: color 0.2s;
         }
-        #iframe{
-            width: 100%;
-            height: 100%;
+
+        .footer a:hover {
+            color: var(--text-light);
+        }
+
+        .mobile-menu-button {
+            display: none;
+            background: none;
             border: none;
+            color: var(--text-light);
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .mobile-menu-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Glassmorphism card style */
+        .glass-card {
+            background: rgba(31, 31, 39, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Responsive styles */
+        @media (max-width: 992px) {
+            .search-container {
+                order: 3;
+                width: 100%;
+                max-width: none;
+                margin: 10px 0 0 0;
+            }
+
+            .navbar {
+                padding: 12px 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-button {
+                display: flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -250px;
+                top: 0;
+                height: 100%;
+                z-index: 1001;
+                padding-top: 70px;
+                box-shadow: var(--shadow-lg);
+            }
+
+            .sidebar.active {
+                transform: translateX(250px);
+            }
+
+            .main-container {
+                flex-direction: column;
+            }
+
+            .content {
+                width: 100%;
+                height: calc(100vh - 180px);
+            }
+
+            .navbar {
+                justify-content: space-between;
+            }
+
+            .profile-link, .chat-button {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .logo {
+                font-size: 22px;
+            }
+
+            .profile-link {
+                margin-left: 5px;
+            }
+
+            .navbar {
+                padding: 10px;
+                gap: 5px;
+            }
+
+            .footer p {
+                font-size: 12px;
+            }
+
+            .chat-button, .profile-link {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(3px);
+            z-index: 1000;
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+
+        .overlay.active {
+            opacity: 1;
+        }
+
+        /* Pulse animation for the logo */
+        @keyframes pulse {
+            0% {
+                filter: drop-shadow(0 0 0px rgba(124, 58, 237, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.8));
+            }
+            100% {
+                filter: drop-shadow(0 0 0px rgba(124, 58, 237, 0.5));
+            }
+        }
+
+        .logo {
+            animation: pulse 3s infinite;
         }
     </style>
 </head>
 <body>
     <nav class="navbar">
+        <button class="mobile-menu-button" id="mobile-menu-toggle">☰</button>
         <h1 class="logo">TeamUp!</h1>
         <div class="search-container">
             <input type="text" class="search-bar" placeholder="Поиск" id="search-input">
-            <div id="dropdown-menu">
+            <div id="dropdown-menu" class="glass-card">
                 <div class="menu-item">
-                    <img src="site_images/startups.png">
+                    <img src="data/site_images/startups.png" alt="Startups">
                     <p>Startups</p>
                 </div>
                 <div class="menu-item">
-                    <img src="site_images/comps.png">
+                    <img src="data/site_images/comps.png" alt="Competitions">
                     <p>Competitions</p>
                 </div>
                 <div class="menu-item">
-                    <img src="site_images/resources.png">
+                    <img src="data/site_images/resources.png" alt="Resources">
                     <p>Resources</p>
                 </div>
                 <div class="menu-item">
-                    <img src="site_images/advices.png">
+                    <img src="data/site_images/advices.png" alt="Advices">
                     <p>Advices & Tips</p>
                 </div>
                 <div class="menu-item">
-                    <img src="site_images/news.png">
+                    <img src="data/site_images/news.png" alt="News">
                     <p>News</p>
                 </div>
                 <div class="menu-item">
-                    <img src="site_images/workshops.png">
+                    <img src="data/site_images/workshops.png" alt="Workshops">
                     <p>Workshops</p>
                 </div>
                 <div class="menu-item">
-                    <img src="site_images/internships.png">
-                    <p>internships</p>
+                    <img src="data/site_images/internships.png" alt="Internships">
+                    <p>Internships</p>
                 </div>
             </div>
         </div>
-        <button class="chat" onclick="loadPage('AI_chat.html')">Обратиться к нейросети</button>
-        <a href="#" class="profile-link">Профиль</a>
+        <button class="chat-button" onclick="loadPage('AI_chat.html')">Arman AI mentor</button>
+        <button  class="profile-link" onclick="loadPage('profile.html')">Профиль</button>
     </nav>
 
+    <div class="overlay" id="sidebar-overlay"></div>
+
     <div class="main-container">
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <ul>
                 <li>
-                    <img src="site_images/home.png">
-                    <button onclick="loadPage('events.html')">Главная</button>
+                    <button class="sidebar-item active" onclick="loadPage('events.html'); setActive(this)">
+                        <img src="data/site_images/home.png" alt="Home">
+                        Главная
+                    </button>
                 </li>
                 <li>
-                    <img src="site_images/calendar.png">
-                    <button onclick="loadPage('calendar.html')">Календарь</button>
+                    <button class="sidebar-item" onclick="loadPage('calendar.html'); setActive(this)">
+                        <img src="data/site_images/calendar.png" alt="Calendar">
+                        Календарь
+                    </button>
                 </li>
                 <li>
-                    <img src="site_images/cources.png">
-                    <button onclick="loadPage('courses.html')">Курсы</button>
+                    <button class="sidebar-item" onclick="loadPage('courses.html'); setActive(this)">
+                        <img src="data/site_images/cources.png" alt="Courses">
+                        Курсы
+                    </button>
                 </li>
                 <li>
-                     <img src="site_images/society.png">
-                    <button onclick="loadPage('users.html')">Сообщество</button>
+                    <button class="sidebar-item" onclick="loadPage('users.html'); setActive(this)">
+                        <img src="data/site_images/society.png" alt="Community">
+                        Сообщество
+                    </button>
                 </li>
-                <li>
-                    <img src="site_images/people.png">
-                   <button onclick="loadPage('site2.html')">Люди</button>
-               </li>
             </ul>
         </aside>
 
         <section class="content">
-            <iframe id="iframe" src="site1.html"></iframe>
+            <iframe id="iframe" src="events.html" title="Page Content"></iframe>
         </section>
     </div>
 
     <footer class="footer">
-        <p>Privacy Policy | Contact Us | Social Media</p>
+        <p><a href="#">Privacy Policy</a> | <a href="#">Contact Us</a> | <a href="#">Social Media</a></p>
     </footer>
 
     <script>
         function loadPage(page) {
-            document.getElementById('iframe').src = page; // Меняет содержимое iframe
+            document.getElementById('iframe').src = page;
+            // Close sidebar on mobile after navigation
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('active');
+                document.getElementById('sidebar-overlay').classList.remove('active');
+                setTimeout(() => {
+                    document.getElementById('sidebar-overlay').style.display = 'none';
+                }, 300);
+            }
         }
 
+        function setActive(element) {
+            // Remove active class from all sidebar items
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Add active class to clicked item
+            element.classList.add('active');
+        }
+
+        // Search functionality
         const searchInput = document.getElementById('search-input');
         const dropdownMenu = document.getElementById('dropdown-menu');
 
@@ -246,9 +577,52 @@
 
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', () => {
-                searchInput.value = item.textContent;
+                searchInput.value = item.querySelector('p').textContent.trim();
                 dropdownMenu.style.display = 'none';
             });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            if (sidebar.classList.contains('active')) {
+                overlay.style.display = 'block';
+                setTimeout(() => {
+                    overlay.classList.add('active');
+                }, 10);
+            } else {
+                overlay.classList.remove('active');
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 300);
+            }
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300);
+        });
+
+        // Handle resize events
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                overlay.style.display = 'none';
+            }
+        });
+
+        // Set active menu item on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set first item as active by default
+            document.querySelector('.sidebar-item').classList.add('active');
         });
     </script>
 </body>

@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #9c27b0;
+            --primary-dark: #6a0dad;
+            --primary-light: #bb86fc;
+            --accent: #03dac6;
+            --bg-dark: #121212;
+            --bg-card: #1e1e1e;
+            --bg-element: #2d2d2d;
+            --text-light: #e0e0e0;
+            --text-dim: #aaaaaa;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #1a1325, #121212);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: linear-gradient(145deg, rgba(30, 30, 46, 0.7), rgba(20, 20, 30, 0.9));
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5),
+                        0 0 30px rgba(156, 39, 176, 0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(156, 39, 176, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6),
+                        0 0 40px rgba(156, 39, 176, 0.3);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #9c27b0 0%, #6a0dad 70%, #3a0057 100%);
+            padding: 60px 0 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+            z-index: 1;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 170px;
+            height: 170px;
+            margin: 0 auto 25px;
+            z-index: 2;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.8);
+            background-color: var(--bg-element);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            color: var(--primary-light);
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-highlight {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .name {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #ffffff;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            position: relative;
+            letter-spacing: 0.5px;
+        }
+
+        #ageDisplay {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.85);
+            z-index: 2;
+            position: relative;
+        }
+
+        .profile-info {
+            padding: 40px;
+            position: relative;
+        }
+
+        .profile-info::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(187, 134, 252, 0.5), transparent);
+        }
+
+        .section {
+            margin-bottom: 35px;
+            position: relative;
+            padding: 20px;
+            background: rgba(30, 30, 46, 0.5);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(156, 39, 176, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            color: var(--primary-light);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .section-title i {
+            margin-right: 12px;
+            font-size: 22px;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(156, 39, 176, 0.15);
+            border-radius: 50%;
+            color: var(--primary-light);
+        }
+
+        .bio {
+            line-height: 1.8;
+            color: var(--text-light);
+            font-size: 16px;
+            padding-left: 10px;
+            border-left: 3px solid rgba(156, 39, 176, 0.3);
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .skill {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.15) 0%, rgba(106, 13, 173, 0.2) 100%);
+            color: var(--primary-light);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid rgba(156, 39, 176, 0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .skill:hover {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.25) 0%, rgba(106, 13, 173, 0.3) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .edit-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            font-size: 15px;
+            backdrop-filter: blur(5px);
+            z-index: 5;
+        }
+
+        .edit-button i {
+            margin-right: 8px;
+        }
+
+        .edit-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #1e1e2e, #15151f);
+            padding: 40px;
+            border-radius: 20px;
+            width: 40%;
+            height: 50%
+            max-width: 550px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4),
+                        0 0 25px rgba(156, 39, 176, 0.25);
+            border: 1px solid rgba(156, 39, 176, 0.2);
+            animation: slideIn 0.3s ease;
+            transform: translateY(0);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary-color), var(--primary-light));
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-title {
+            font-size: 24px;
+            color: var(--primary-light);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-title i {
+            margin-right: 10px;
+            font-size: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--primary-light);
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: rgba(45, 45, 45, 0.7);
+            border: 1px solid rgba(156, 39, 176, 0.3);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.2);
+            background-color: rgba(50, 50, 50, 0.7);
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .save-button, .cancel-button {
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .save-button {
+            background: linear-gradient(135deg, #9c27b0, #6a0dad);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 10px rgba(156, 39, 176, 0.4);
+        }
+
+        .save-button:hover {
+            background: linear-gradient(135deg, #a92ebf, #7b1fa2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(156, 39, 176, 0.5);
+        }
+
+        .save-button i, .cancel-button i {
+            margin-right: 8px;
+        }
+
+        .cancel-button {
+            background-color: transparent;
+            color: var(--text-dim);
+            border: 1px solid rgba(170, 170, 170, 0.3);
+        }
+
+        .cancel-button:hover {
+            background-color: rgba(170, 170, 170, 0.1);
+            color: var(--text-light);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(156, 39, 176, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-light);
+            font-size: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-3px);
+            background: rgba(156, 39, 176, 0.4);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive styles */
+        @media (max-width: 992px) {
+            .container {
+                margin: 30px auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile-info {
+                padding: 30px 20px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            .modal-content {
+                padding: 30px;
+            }
+
+            .name {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                margin: 20px auto;
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 50px 0 30px;
+            }
+
+            .avatar-container {
+                width: 140px;
+                height: 140px;
+                margin-bottom: 20px;
+            }
+
+            .name {
+                font-size: 24px;
+            }
+
+            #ageDisplay {
+                font-size: 16px;
+            }
+
+            .edit-button {
+                top: 15px;
+                right: 15px;
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .section-title i {
+                width: 30px;
+                height: 30px;
+                font-size: 18px;
+            }
+
+            .bio {
+                font-size: 15px;
+            }
+
+            .button-group {
+                flex-direction: column-reverse;
+                gap: 10px;
+            }
+
+            .save-button, .cancel-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .modal-content {
+                padding: 25px 20px;
+            }
+
+            .modal-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button id="editBtn" class="edit-button">
+                <i class="fas fa-edit"></i> Edit Profile
+            </button>
+            <div class="avatar-container">
+                <div class="avatar" id="avatar">
+                    <!-- Default user icon if no image is set -->
+                    <span>👤</span>
+                </div>
+                <div class="avatar-highlight"></div>
+            </div>
+            <h1 class="name" id="nameDisplay">John Doe</h1>
+            <div id="ageDisplay">32 years old</div>
+            <div class="social-links">
+                <div class="social-icon"><i class="fab fa-twitter"></i></div>
+                <div class="social-icon"><i class="fab fa-linkedin-in"></i></div>
+                <div class="social-icon"><i class="fab fa-github"></i></div>
+                <div class="social-icon"><i class="fab fa-dribbble"></i></div>
+            </div>
+        </div>
+
+        <div class="profile-info">
+            <div class="section">
+                <div class="section-title">
+                    <i class="fas fa-user-circle"></i> Biography
+                </div>
+                <p class="bio" id="bioDisplay">Frontend developer passionate about creating intuitive user experiences. I enjoy hiking on weekends and experimenting with new cooking recipes.</p>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    <i class="fas fa-code"></i> Skills
+                </div>
+                <div class="skills" id="skillsDisplay">
+                    <!-- Skills will be added here dynamically -->
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-title">
+                <i class="fas fa-user-edit"></i> Edit Your Profile
+            </div>
+
+            <div class="form-group">
+                <label for="nameInput"><i class="fas fa-user"></i> Name</label>
+                <input type="text" id="nameInput" placeholder="Enter your name">
+            </div>
+
+            <div class="form-group">
+                <label for="ageInput"><i class="fas fa-birthday-cake"></i> Age</label>
+                <input type="number" id="ageInput" placeholder="Enter your age">
+            </div>
+
+            <div class="form-group">
+                <label for="bioInput"><i class="fas fa-comment-alt"></i> Biography</label>
+                <textarea id="bioInput" placeholder="Tell us about yourself"></textarea>
+            </div>
+
+
+            <div class="form-group">
+                <label for="skillsInput"><i class="fas fa-tools"></i> Skills (comma-separated)</label>
+                <input type="text" id="skillsInput" placeholder="e.g. HTML, CSS, JavaScript">
+            </div>
+
+            <div class="form-group">
+                <label for="avatarInput"><i class="fas fa-image"></i> Avatar URL (optional)</label>
+                <input type="text" id="avatarInput" placeholder="Enter image URL">
+            </div>
+
+            <div class="button-group">
+                <button class="cancel-button" id="cancelBtn"><i class="fas fa-times"></i> Cancel</button>
+                <button class="save-button" id="saveBtn"><i class="fas fa-check"></i> Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+// Initial profile data
+var profileData = {
+    name: "John Doe",
+    age: 32,
+    bio: "Frontend developer passionate about creating intuitive user experiences. I enjoy hiking on weekends and experimenting with new cooking recipes.",
+    skills: ["HTML", "CSS", "JavaScript", "React", "UI/UX Design", "Node.js"],
+    experience: "Senior Frontend Developer at TechCorp (2020 - Present)<br>UI/UX Designer at DesignHub (2018 - 2020)<br>Junior Web Developer at WebSolutions (2016 - 2018)",
+    avatarUrl: ""
+};
+
+// DOM elements
+var nameDisplay = document.getElementById('nameDisplay');
+var ageDisplay = document.getElementById('ageDisplay');
+var bioDisplay = document.getElementById('bioDisplay');
+var skillsDisplay = document.getElementById('skillsDisplay');
+var experienceDisplay = document.getElementById('experienceDisplay');
+var avatar = document.getElementById('avatar');
+
+var editBtn = document.getElementById('editBtn');
+var editModal = document.getElementById('editModal');
+var saveBtn = document.getElementById('saveBtn');
+var cancelBtn = document.getElementById('cancelBtn');
+
+var nameInput = document.getElementById('nameInput');
+var ageInput = document.getElementById('ageInput');
+var bioInput = document.getElementById('bioInput');
+var experienceInput = document.getElementById('experienceInput');
+var skillsInput = document.getElementById('skillsInput');
+var avatarInput = document.getElementById('avatarInput');
+
+// Initialize profile display
+function renderProfile() {
+    nameDisplay.textContent = profileData.name;
+    ageDisplay.textContent = profileData.age + " years old";
+    bioDisplay.textContent = profileData.bio;
+    experienceDisplay.innerHTML = profileData.experience;
+
+    // Clear and render skills
+    skillsDisplay.innerHTML = '';
+    for (var i = 0; i < profileData.skills.length; i++) {
+        var skill = profileData.skills[i];
+        var skillElement = document.createElement('span');
+        skillElement.classList.add('skill');
+        skillElement.textContent = skill;
+        skillsDisplay.appendChild(skillElement);
+    }
+
+    // Update avatar
+    if (profileData.avatarUrl) {
+        avatar.innerHTML = '<img src="' + profileData.avatarUrl + '" alt="Profile Avatar">';
+    } else {
+        avatar.innerHTML = '<span>👤</span>';
+    }
+}
+
+// Open edit modal with animation
+editBtn.addEventListener('click', function() {
+    nameInput.value = profileData.name;
+    ageInput.value = profileData.age;
+    bioInput.value = profileData.bio;
+    skillsInput.value = profileData.skills.join(', ');
+    avatarInput.value = profileData.avatarUrl;
+
+    editModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+});
+
+// Close modal with animation
+function closeModal() {
+    const modalContent = document.querySelector('.modal-content');
+    modalContent.style.animation = 'slideIn 0.3s ease reverse';
+
+    setTimeout(() => {
+        editModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        modalContent.style.animation = 'slideIn 0.3s ease';
+    }, 280);
+}
+
+cancelBtn.addEventListener('click', closeModal);
+
+// Save changes
+saveBtn.addEventListener('click', function() {
+    profileData.name = nameInput.value || 'Anonymous';
+    profileData.age = parseInt(ageInput.value) || 0;
+    profileData.bio = bioInput.value || 'No biography provided.';
+    profileData.experience = experienceInput.value.replace(/\n/g, '<br>') || 'No experience listed.';
+
+    var skillsArray = skillsInput.value.split(',');
+    var cleanedSkills = [];
+
+    for (var i = 0; i < skillsArray.length; i++) {
+        var trimmedSkill = skillsArray[i].trim();
+        if (trimmedSkill !== '') {
+            cleanedSkills.push(trimmedSkill);
+        }
+    }
+
+    profileData.skills = cleanedSkills.length > 0 ? cleanedSkills : ['No skills listed'];
+    profileData.avatarUrl = avatarInput.value;
+
+    renderProfile();
+    closeModal();
+});
+
+// Close modal when clicking outside
+window.addEventListener('click', function(e) {
+    if (e.target === editModal) {
+        closeModal();
+    }
+});
+
+// Add hover effects to sections
+document.querySelectorAll('.section').forEach(section => {
+    section.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-3px)';
+        this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+    });
+
+    section.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = 'none';
+    });
+});
+
+// Add special effects for avatar
+const avatarElement = document.querySelector('.avatar');
+avatarElement.addEventListener('mouseenter', function() {
+    this.style.transform = 'scale(1.05)';
+    this.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.5)';
+});
+
+avatarElement.addEventListener('mouseleave', function() {
+    this.style.transform = 'scale(1)';
+    this.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.4)';
+});
+
+// Media query management for responsive design
+function handleResponsiveChanges() {
+    const width = window.innerWidth;
+
+    if (width <= 576) {
+        // Small screens adjustments
+        document.querySelector('.container').style.margin = '10px auto';
+    } else if (width <= 768) {
+        // Medium screens adjustments
+        document.querySelector('.container').style.margin = '20px auto';
+    } else {
+        // Large screens
+        document.querySelector('.container').style.margin = '40px auto';
+    }
+}
+
+// Run on load and resize
+window.addEventListener('load', handleResponsiveChanges);
+window.addEventListener('resize', handleResponsiveChanges);
+
+// Initial render
+renderProfile();
+</script>
+</body>
+</html>

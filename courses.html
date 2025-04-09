@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdTech Course Library</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #0f0f1a;
+            --secondary-dark: #1a1a2e;
+            --accent-purple: #8a2be2;
+            --light-purple: #a78bfa;
+            --gradient-purple: linear-gradient(135deg, #8a2be2, #a78bfa);
+            --gradient-dark: linear-gradient(135deg, #121212, #1e1e2e);
+            --text-light: #ffffff;
+            --text-gray: #c2c2c2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--primary-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--gradient-dark);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), transparent);
+            pointer-events: none;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--gradient-purple);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--light-purple);
+        }
+
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 2rem;
+        }
+
+        .courses-wrapper {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .section-title {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-purple);
+            border-radius: 2px;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .course-card {
+            background: var(--gradient-dark);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border: 1px solid rgba(138, 43, 226, 0.2);
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(138, 43, 226, 0.25);
+        }
+
+        .course-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(138, 43, 226, 0.05));
+            pointer-events: none;
+        }
+
+        .course-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 2px solid rgba(138, 43, 226, 0.3);
+        }
+
+        .course-info {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: 0.8rem;
+        }
+
+        .course-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        .course-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            background: rgba(138, 43, 226, 0.2);
+            border-radius: 4px;
+            color: var(--light-purple);
+        }
+
+        .course-actions {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 0.8rem;
+        }
+
+        .download-btn {
+            background: var(--gradient-purple);
+            color: white;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(138, 43, 226, 0.25);
+        }
+
+        .download-btn:hover {
+            box-shadow: 0 6px 12px rgba(138, 43, 226, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .sidebar {
+            width: 280px;
+            padding: 1.5rem;
+            background: var(--gradient-dark);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            position: relative;
+            overflow: hidden;
+            align-self: flex-start;
+        }
+
+        .sidebar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-purple);
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--light-purple);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.7rem;
+            cursor: pointer;
+            padding: 0.3rem 0;
+        }
+
+        .filter label {
+            flex: 1;
+            font-size: 0.9rem;
+            padding-left: 0.5rem;
+            cursor: pointer;
+            color: var(--text-gray);
+            transition: color 0.2s;
+        }
+
+        .filter:hover label {
+            color: var(--text-light);
+        }
+
+        .custom-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 2px solid rgba(138, 43, 226, 0.6);
+            background: rgba(138, 43, 226, 0.1);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .custom-checkbox:checked {
+            background: var(--accent-purple);
+        }
+
+        .custom-checkbox:checked::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(138, 43, 226, 0.2);
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            flex: 1;
+            padding: 0.5rem;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .search-box i {
+            color: var(--light-purple);
+        }
+
+        .search-box ::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .no-courses {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-gray);
+            font-style: italic;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 1200px) {
+            .courses-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                margin-bottom: 1.5rem;
+                order: -1;
+            }
+
+            .filter-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .filter {
+                width: auto;
+                margin-right: 1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+        }
+
+        /* Animation for card entry */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .course-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div class="main-container">
+        <div class="courses-wrapper">
+            <h2 class="section-title">Featured Courses</h2>
+            <div class="courses-grid" id="courses">
+                <!-- Courses will be loaded here -->
+                <div class="no-courses">Loading courses...</div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search courses...">
+            </div>
+
+            <div class="filter-group">
+                <h3 class="filter-title"><i class="fas fa-filter"></i> Categories</h3>
+                <div id="filters">
+                    <div class="filter">
+                        <input type="checkbox" class="custom-checkbox" id="all" value="all" checked>
+                        <label for="all">All Courses</label>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" class="custom-checkbox" id="beginner_programming" value="beginner_programming">
+                        <label for="beginner_programming">Programming for Beginners</label>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" class="custom-checkbox" id="design_creativity" value="design_creativity">
+                        <label for="design_creativity">Design & Creativity</label>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" class="custom-checkbox" id="ai" value="ai">
+                        <label for="ai">Artificial Intelligence</label>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" class="custom-checkbox" id="app_development" value="app_development">
+                        <label for="app_development">App Development</label>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" class="custom-checkbox" id="web_development" value="web_development">
+                        <label for="web_development">Web Development</label>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" class="custom-checkbox" id="competitive_programming" value="competitive_programming">
+                        <label for="competitive_programming">Competitive Programming</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allCourses = [];
+
+        async function loadCourses() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/courses');
+                allCourses = await response.json();
+                displayCourses(allCourses);
+
+                // Add delay for animation effect
+                const cards = document.querySelectorAll('.course-card');
+                cards.forEach((card, index) => {
+                    card.style.animationDelay = `${index * 0.1}s`;
+                });
+            } catch (error) {
+                console.error('Error loading courses:', error);
+                document.getElementById('courses').innerHTML = `
+                    <div class="no-courses">
+                        Failed to load courses. Please try again later.
+                    </div>
+                `;
+            }
+        }
+
+        function displayCourses(courses) {
+            const coursesContainer = document.getElementById('courses');
+
+            if (courses.length === 0) {
+                coursesContainer.innerHTML = `
+                    <div class="no-courses">
+                        No courses match your criteria.
+                    </div>
+                `;
+                return;
+            }
+
+            coursesContainer.innerHTML = '';
+
+            courses.forEach((course, index) => {
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.style.animationDelay = `${index * 0.1}s`;
+
+                // Generate random tags for demo purposes
+                const tags = generateRandomTags(course.title);
+                const tagsHTML = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+
+                card.innerHTML = `
+                    <img src="${course.image_path}" alt="${course.title}" class="course-img">
+                    <div class="course-info">
+                        <h3 class="course-title">${course.title}</h3>
+                        <div class="course-tags">
+                            ${tagsHTML}
+                        </div>
+                        <div class="course-actions">
+                            <a href="${course.link}" class="download-btn" target="_blank">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        </div>
+                    </div>
+                `;
+                coursesContainer.appendChild(card);
+            });
+        }
+
+        // Helper function to generate random tags for demo purposes
+        function generateRandomTags(title) {
+            const allTags = ['Beginner', 'Advanced', 'Free', 'Project-based', 'Popular', 'New', 'Trending', 'Certificate', 'Python', 'JavaScript', 'AI', 'Design', 'Mobile', 'Web'];
+            const count = Math.floor(Math.random() * 2) + 1;
+            const shuffled = allTags.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+
+        // Filter functionality
+        function setupFilters() {
+            const allCheckbox = document.getElementById('all');
+            const categoryCheckboxes = document.querySelectorAll('#filters input:not([value="all"])');
+
+            // When "All" is selected, uncheck others
+            allCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    categoryCheckboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                    filterCourses();
+                } else {
+                    // If unchecking "All" with nothing else selected, re-check it
+                    const anyOtherChecked = Array.from(categoryCheckboxes).some(cb => cb.checked);
+                    if (!anyOtherChecked) {
+                        this.checked = true;
+                    }
+                }
+            });
+
+            // When any category is selected, uncheck "All"
+            categoryCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        allCheckbox.checked = false;
+                    } else {
+                        // If unchecking the last category, check "All"
+                        const anyOtherChecked = Array.from(categoryCheckboxes).some(cb => cb.checked && cb !== this);
+                        if (!anyOtherChecked) {
+                            allCheckbox.checked = true;
+                        }
+                    }
+                    filterCourses();
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', filterCourses);
+        }
+
+        function filterCourses() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const selectedCategories = Array.from(document.querySelectorAll('#filters input:checked')).map(cb => cb.value);
+
+            // If "All" is selected or no categories selected, show all courses
+            const showAll = selectedCategories.includes('all');
+
+            let filteredCourses = allCourses.filter(course => {
+                // Filter by search query
+                const matchesSearch = course.title.toLowerCase().includes(searchQuery);
+
+                // Filter by category
+                let matchesCategory = showAll;
+                if (!showAll) {
+                    // This is a simplified example - you would need actual category data in your courses
+                    // For now, we'll just use random matching for demo purposes
+                    const courseCategory = course.title.toLowerCase().includes('programming') ? 'beginner_programming' :
+                                          course.title.toLowerCase().includes('design') ? 'design_creativity' :
+                                          course.title.toLowerCase().includes('ai') ? 'ai' : 'app_development';
+
+                    matchesCategory = selectedCategories.includes(courseCategory);
+                }
+
+                return matchesSearch && matchesCategory;
+            });
+
+            displayCourses(filteredCourses);
+        }
+
+        // Load courses and set up event handlers
+        loadCourses();
+        setupFilters();
+    </script>
+</body>
+</html>

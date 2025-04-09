@@ -3,156 +3,854 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Люди</title>
+    <title>Поиск команды</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            background-color: #121212;
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        :root {
+            --dark-bg: #121218;
+            --card-bg: #1e1e2e;
+            --card-hover: #252538;
+            --primary-purple: #8a2be2;
+            --secondary-purple: #a78bfa;
+            --gradient-purple: linear-gradient(135deg, #8a2be2, #a78bfa);
+            --gradient-dark: linear-gradient(to bottom, #1a1a2a, #141420);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: #d9d9e3;
+            --text-muted: #9ca3af;
+            --border-color: rgba(138, 43, 226, 0.3);
+        }
+
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .container {
-            text-align: center;
-            width: 80%;
-            max-width: 600px;
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
         }
 
-        h2 {
-            margin-bottom: 20px;
+        .header {
+            background: var(--gradient-dark);
+            padding: 1.25rem 1.5rem;
+            position: relative;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            z-index: 10;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-purple);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            background: var(--gradient-purple);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-purple);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .search-wrapper {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-purple);
+            pointer-events: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .main-container {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 0 0.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-purple);
+            border-radius: 2px;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .filter-btn {
+            background: rgba(138, 43, 226, 0.15);
+            color: var(--secondary-purple);
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            background: rgba(138, 43, 226, 0.25);
         }
 
         .grid-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .card {
-            background-color: #222;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: left;
-        }
-
-        .avatar {
+        .user-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
             display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+            background: var(--card-hover);
+            border-color: var(--primary-purple);
+        }
+
+        .card-gradient {
+            height: 5px;
+            background: var(--gradient-purple);
+        }
+
+        .card-content {
+            padding: 1.25rem;
+            display: flex;
+            gap: 1rem;
             align-items: center;
         }
 
+        .card-avatar {
+            flex-shrink: 0;
+        }
+
         .avatar-circle {
-            width: 30px;
-            height: 30px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            margin-right: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            position: relative;
+            z-index: 1;
         }
 
-        .green { background-color: green; }
-        .pink { background-color: purple; }
-        .yellow { background-color: yellow; color: black; }
-
-        .pagination {
-            margin-top: 20px;
+        .avatar-circle::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--gradient-purple);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.3;
         }
 
-        button {
-            background-color: #333;
+        .avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .green .avatar-inner {
+            background: linear-gradient(135deg, #34d399, #10b981);
+        }
+
+        .pink .avatar-inner, .purple .avatar-inner {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+        }
+
+        .yellow .avatar-inner {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #18181b;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .user-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0;
+        }
+
+        .user-skills {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin-top: 0.5rem;
+        }
+
+        .skill-tag {
+            background: rgba(138, 43, 226, 0.15);
+            color: var(--secondary-purple);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .card-actions {
+            margin-left: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-self: stretch;
+            justify-content: space-between;
+        }
+
+        .connect-btn {
+            background: var(--gradient-purple);
             color: white;
             border: none;
-            padding: 10px;
-            margin: 0 5px;
+            border-radius: 6px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            border-radius: 5px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(138, 43, 226, 0.3);
         }
 
-        button:disabled {
-            opacity: 0.5;
+        .connect-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(138, 43, 226, 0.4);
+        }
+
+        .favorite-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .favorite-btn:hover {
+            color: #fbbf24;
+            border-color: #fbbf24;
+        }
+
+        .favorite-btn.active {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+            border-color: #fbbf24;
+        }
+
+        .online-status {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 0 2px var(--card-bg);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .page-info {
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: var(--secondary-purple);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .page-number {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .page-btn {
+            background: rgba(138, 43, 226, 0.1);
+            color: var(--secondary-purple);
+            border: 1px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: rgba(138, 43, 226, 0.2);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
             cursor: not-allowed;
+        }
+
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            grid-column: 1 / -1;
+        }
+
+        .loader::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(138, 43, 226, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-purple);
+            animation: spin 1s linear infinite;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: rgba(138, 43, 226, 0.3);
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-text {
+            color: var(--text-muted);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Animations */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-wrapper {
+                max-width: 100%;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .grid-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .card-content {
+                flex-wrap: wrap;
+            }
+
+            .card-actions {
+                flex-direction: row;
+                margin-left: 0;
+                margin-top: 1rem;
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Люди</h2>
-        <div id="people-list" class="grid-container"></div>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <i class="fas fa-users-gear logo-icon"></i>
+                <h1 class="logo-text">TeamMate Finder</h1>
+            </div>
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="search-input" placeholder="Поиск по имени или навыкам...">
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="section-header">
+            <h2 class="section-title">Найдите партнера для проекта</h2>
+            <div class="control-buttons">
+                <button class="filter-btn" id="filter-btn">
+                    <i class="fas fa-filter"></i>
+                    <span>Фильтры</span>
+                </button>
+                <button class="filter-btn" id="sort-btn">
+                    <i class="fas fa-sort"></i>
+                    <span>Сортировка</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="people-list" class="grid-container">
+            <!-- Loading state will show here initially -->
+            <div class="loader"></div>
+        </div>
+
         <div class="pagination">
-            <button id="prev-btn" disabled>◀</button>
-            <span id="page-number">1</span>
-            <button id="next-btn">▶</button>
+            <button id="prev-btn" class="page-btn" disabled>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="page-info">
+                <span>Страница</span>
+                <span id="page-number" class="page-number">1</span>
+            </div>
+            <button id="next-btn" class="page-btn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 
     <script>
+        // Global variables
         let currentPage = 1;
         const itemsPerPage = 6;
+        let allUsers = [];
+        let filteredUsers = [];
+        let isLoading = true;
+        let searchTimeout;
+
+        // DOM elements
         const peopleList = document.getElementById("people-list");
         const prevBtn = document.getElementById("prev-btn");
         const nextBtn = document.getElementById("next-btn");
         const pageNumber = document.getElementById("page-number");
+        const searchInput = document.getElementById("search-input");
+        const filterBtn = document.getElementById("filter-btn");
+        const sortBtn = document.getElementById("sort-btn");
 
-        async function fetchPeople(page) {
+        // Cache selectors to improve performance
+        const DOM = {
+            peopleList: document.getElementById("people-list"),
+            prevBtn: document.getElementById("prev-btn"),
+            nextBtn: document.getElementById("next-btn"),
+            pageNumber: document.getElementById("page-number"),
+            searchInput: document.getElementById("search-input")
+        };
+
+        // Skill categories for generating demo tags
+        const skillCategories = {
+            "javascript": ["JavaScript", "React", "Vue", "Front-end"],
+            "python": ["Python", "Django", "Flask", "Back-end"],
+            "java": ["Java", "Spring", "Android"],
+            "csharp": ["C#", ".NET", "Unity"],
+            "mobile": ["Android", "iOS", "React Native"],
+            "web": ["HTML/CSS", "Web Design", "UI/UX"],
+            "data": ["Data Science", "ML", "Analytics"],
+            "design": ["UI Design", "Figma", "Графический дизайн"],
+            "gamedev": ["Unity", "Unreal", "Game Design"],
+            "qa": ["QA", "Testing", "Автоматизация"]
+        };
+
+        // Set loading state
+        function setLoading(loading) {
+            isLoading = loading;
+            if (loading) {
+                DOM.peopleList.innerHTML = '<div class="loader"></div>';
+            }
+        }
+
+        // Display empty state
+        function showEmptyState(message = 'Пользователи не найдены') {
+            DOM.peopleList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-user-slash empty-icon"></i>
+                    <h3 class="empty-title">Ничего не найдено</h3>
+                    <p class="empty-text">${message}</p>
+                </div>
+            `;
+        }
+
+        // Generate skill tags based on user skills
+        function generateSkillTags(skillsText) {
+            if (!skillsText) return [];
+
+            const skills = skillsText.toLowerCase();
+            let tags = [];
+
+            // Match skills with categories
+            for (const [key, categoryTags] of Object.entries(skillCategories)) {
+                if (skills.includes(key)) {
+                    // Get 1-2 random tags from this category
+                    const randomTags = categoryTags
+                        .sort(() => 0.5 - Math.random())
+                        .slice(0, Math.floor(Math.random() * 2) + 1);
+
+                    tags = [...tags, ...randomTags];
+                }
+            }
+
+            // If no specific tags were found, extract words from the skills
+            if (tags.length === 0) {
+                const words = skills.split(/[,\s]+/).filter(word => word.length > 3);
+                if (words.length > 0) {
+                    tags = words.slice(0, 3).map(w => w.charAt(0).toUpperCase() + w.slice(1));
+                } else {
+                    tags = ["Teamwork"];
+                }
+            }
+
+            // Limit to max 3 tags and ensure uniqueness
+            return [...new Set(tags)].slice(0, 3);
+        }
+
+        // Check if a user is online (random for demo)
+        function isUserOnline() {
+            return Math.random() > 0.6;
+        }
+
+        // Fetch users from the database API
+        async function fetchUsers(page) {
+            setLoading(true);
+
             try {
-                const response = await fetch(`https://4cbc-2a0d-b201-1015-cfb4-57cd-d9af-48ed-3822.ngrok-free.app/users_pages?page=${page}`);
+                const response = await fetch(`http://127.0.0.1:5000/users_pages?page=${page}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
                 const data = await response.json();
                 return data;
             } catch (error) {
-                console.error("Ошибка загрузки данных", error);
+                console.error("Error fetching users:", error);
+                showEmptyState("Ошибка загрузки данных. Пожалуйста, попробуйте позже.");
                 return [];
+            } finally {
+                setLoading(false);
             }
         }
 
-        async function renderPeople() {
-            peopleList.innerHTML = "";
-            const people = await fetchPeople(currentPage);
-            if (people.length === 0 && currentPage > 1) {
-                currentPage--;
-                return renderPeople();
+        // Render users to the DOM
+        function renderUsers(users) {
+            DOM.peopleList.innerHTML = "";
+
+            if (!users || users.length === 0) {
+                showEmptyState();
+                return;
             }
 
-            people.forEach(person => {
+            users.forEach((user, index) => {
                 const card = document.createElement("div");
-                card.classList.add("card");
-                const colorClass = person.color || "green";
+                card.className = "user-card";
+                card.style.animationDelay = `${index * 0.1}s`;
+
+                // Generate demo data for visual enhancement
+                const isOnline = isUserOnline();
+                const tags = generateSkillTags(user.skills);
+                const tagsHTML = tags.map(tag => `<span class="skill-tag">${tag}</span>`).join('');
+                const colorClass = user.color || "purple";
 
                 card.innerHTML = `
-                    <div class="avatar">
-                        <div class="avatar-circle ${colorClass}">${person.name ? person.name[0] : "?"}</div>
-                        <div>
-                            <strong>${person.name || "Неизвестный"}</strong><br>
-                            <small>${person.skills || "Навыки не указаны"}</small>
+                    <div class="card-gradient"></div>
+                    <div class="card-content">
+                        <div class="card-avatar">
+                            <div class="avatar-circle ${colorClass}">
+                                <div class="avatar-inner">${user.name ? user.name[0].toUpperCase() : "?"}</div>
+                            </div>
                         </div>
+                        <div class="user-info">
+                            <h3 class="user-name">${user.name || "Неизвестный пользователь"}</h3>
+                            <p class="user-skills">${user.skills || "Навыки не указаны"}</p>
+                            <div class="skill-tags">
+                                ${tagsHTML}
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="connect-btn" title="Связаться">
+                                <i class="fas fa-message"></i>
+                            </button>
+                            <button class="favorite-btn" title="Добавить в избранное">
+                                <i class="far fa-star"></i>
+                            </button>
+                        </div>
+                        ${isOnline ? '<div class="online-status" title="В сети"></div>' : ''}
                     </div>
                 `;
-                peopleList.appendChild(card);
+
+                // Add event listeners
+                const favoriteBtn = card.querySelector('.favorite-btn');
+                favoriteBtn.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    if (this.classList.contains('active')) {
+                        this.innerHTML = '<i class="fas fa-star"></i>';
+                    } else {
+                        this.innerHTML = '<i class="far fa-star"></i>';
+                    }
+                });
+
+                DOM.peopleList.appendChild(card);
             });
 
-            pageNumber.textContent = currentPage;
-            prevBtn.disabled = currentPage === 1;
-            nextBtn.disabled = people.length < itemsPerPage;
+            // Update pagination controls
+            updatePagination();
         }
 
-        prevBtn.addEventListener("click", () => {
+        // Update pagination controls
+        function updatePagination() {
+            DOM.pageNumber.textContent = currentPage;
+            DOM.prevBtn.disabled = currentPage === 1;
+            DOM.nextBtn.disabled = filteredUsers.length < itemsPerPage;
+        }
+
+        // Handle search functionality
+        function handleSearch() {
+            const searchTerm = DOM.searchInput.value.toLowerCase().trim();
+
+            if (searchTerm === '') {
+                // If search is cleared, reset to original data
+                filteredUsers = [...allUsers];
+            } else {
+                // Filter the users based on name or skills
+                filteredUsers = allUsers.filter(user => {
+                    return (user.name && user.name.toLowerCase().includes(searchTerm)) ||
+                           (user.skills && user.skills.toLowerCase().includes(searchTerm));
+                });
+            }
+
+            renderUsers(filteredUsers);
+        }
+
+        // Load users data
+        async function loadUsers() {
+            try {
+                filteredUsers = await fetchUsers(currentPage);
+                allUsers = [...filteredUsers];
+                renderUsers(filteredUsers);
+            } catch (error) {
+                console.error("Failed to load users:", error);
+                showEmptyState("Не удалось загрузить данные. Пожалуйста, проверьте подключение к серверу.");
+            }
+        }
+
+        // Event Listeners
+        DOM.prevBtn.addEventListener("click", async () => {
             if (currentPage > 1) {
                 currentPage--;
-                renderPeople();
+                filteredUsers = await fetchUsers(currentPage);
+                allUsers = [...filteredUsers];
+                renderUsers(filteredUsers);
             }
         });
 
-        nextBtn.addEventListener("click", () => {
+        DOM.nextBtn.addEventListener("click", async () => {
             currentPage++;
-            renderPeople();
+            filteredUsers = await fetchUsers(currentPage);
+
+            if (filteredUsers.length === 0 && currentPage > 1) {
+                currentPage--;
+                filteredUsers = await fetchUsers(currentPage);
+            }
+
+            allUsers = [...filteredUsers];
+            renderUsers(filteredUsers);
         });
 
-        renderPeople();
+        DOM.searchInput.addEventListener("input", () => {
+            // Debounce search to avoid excessive API calls
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(handleSearch, 300);
+        });
+
+        filterBtn.addEventListener("click", () => {
+            alert("Функция фильтрации будет доступна в следующем обновлении");
+        });
+
+        sortBtn.addEventListener("click", () => {
+            alert("Функция сортировки будет доступна в следующем обновлении");
+        });
+
+        // Initialize the application
+        document.addEventListener("DOMContentLoaded", () => {
+            loadUsers();
+        });
+
+        // Load users immediately
+        loadUsers();
     </script>
 </body>
 </html>

@@ -1,13 +1,15 @@
 # TeamUp
 
-Простой веб-проект на HTML, CSS и JS. Открой `index.html` в браузере.
+TeamUp is a web platform for teens interested in technology and personal growth. It provides an AI mentor, event catalog, and social features to help users explore opportunities and connect with peers.
 
-## Скриншоты
+Built with HTML, CSS, and JS. Open `index.html` in your browser.
+
+## Screenshots
 
 ![AI Chat](ai_chat_screen.jpg)
 ![Dashboard](dashboard_screen.jpg)
 
-## Структура
+## Structure
 
 ```
 index.html
@@ -18,7 +20,7 @@ dashboard_screen.jpg
 assets/
 ```
 
-## Быстрый старт
+## Quick Start
 
-1. Склонируй/скачай проект
-2. Открой `index.html`
+1. Clone or download the project
+2. Open `index.html`

@@ -9,16 +9,6 @@ Built with HTML, CSS, and JS. Open `index.html` in your browser.
 ![AI Chat](ai_chat_screen.jpg)
 ![Dashboard](dashboard_screen.jpg)
 
-## Structure
-
-```
-index.html
-style.css
-script.js
-ai_chat_screen.jpg
-dashboard_screen.jpg
-assets/
-```
 
 ## Quick Start
 
